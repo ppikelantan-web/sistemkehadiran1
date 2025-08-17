@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Kehadiran Pelatih GIATMARA Kelantan</title>
+    <meta name="version" content="2.0.0">
+    <meta name="last-updated" content="2024-12-19">
+    <meta name="author" content="GIATMARA Kelantan">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-shadow { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .hover-scale { transition: transform 0.2s; }
+        .hover-scale:hover { transform: scale(1.02); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Demo Notice -->
+    <div class="bg-yellow-50 border-b border-yellow-200 p-2">
+        <div class="container mx-auto text-center">
+            <p class="text-yellow-800 text-sm">
+                <strong>⚠️ DEMO VERSION:</strong> 
+                Ini adalah versi demo untuk tujuan demonstrasi sahaja. Untuk kegunaan rasmi, sila hubungi pentadbir sistem.
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                    <span class="text-purple-600 font-bold text-lg">G</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold">GIATMARA Kelantan</h1>
+                    <p class="text-sm opacity-90">Sistem Kehadiran Pelatih</p>
+                </div>
+            </div>
+            <div id="userInfo" class="hidden">
+                <span id="currentUser" class="mr-4"></span>
+                <button onclick="logout()" class="bg-white bg-opacity-20 px-4 py-2 rounded-lg hover:bg-opacity-30 transition">
+                    Log Keluar
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Selection Screen -->
+    <div id="loginSelection" class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8">Pilih Jenis Log Masuk</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Pusat Login -->
+                <div class="card-shadow bg-white rounded-xl p-8 hover-scale cursor-pointer" onclick="showPusatLogin()">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Log Masuk Pusat</h3>
+                    <p class="text-gray-600">Untuk kakitangan pusat GIATMARA mengurus kehadiran pelatih</p>
+                </div>
+
+                <!-- Admin Login -->
+                <div class="card-shadow bg-white rounded-xl p-8 hover-scale cursor-pointer" onclick="showAdminLogin()">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Log Masuk Admin</h3>
+                    <p class="text-gray-600">Untuk pentadbir sistem menguruskan pusat, kursus dan laporan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pusat Login Form -->
+    <div id="pusatLoginForm" class="hidden container mx-auto px-4 py-12">
+        <div class="max-w-md mx-auto">
+            <div class="card-shadow bg-white rounded-xl p-8">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Log Masuk Pusat</h2>
+                    <p class="text-gray-600 mt-2">Masukkan maklumat pusat anda</p>
+                </div>
+                <form onsubmit="loginPusat(event)">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Pilih Pusat</label>
+                        <select id="pusatSelect" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                            <option value="">Pilih Pusat GIATMARA</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Kata Laluan</label>
+                        <input type="password" id="pusatPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Masukkan kata laluan" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-medium">
+                        Log Masuk
+                    </button>
+                </form>
+                <button onclick="backToSelection()" class="w-full mt-4 text-gray-600 hover:text-gray-800 transition">
+                    ← Kembali ke Pilihan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Form -->
+    <div id="adminLoginForm" class="hidden container mx-auto px-4 py-12">
+        <div class="max-w-md mx-auto">
+            <div class="card-shadow bg-white rounded-xl p-8">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Log Masuk Admin</h2>
+                    <p class="text-gray-600 mt-2">Akses pentadbir sistem</p>
+                </div>
+                <form onsubmit="loginAdmin(event)">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">ID Admin</label>
+                        <input type="text" id="adminId" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Masukkan ID Admin" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Kata Laluan</label>
+                        <input type="password" id="adminPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" placeholder="Masukkan kata laluan" required>
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-medium">
+                        Log Masuk
+                    </button>
+                </form>
+                <button onclick="backToSelection()" class="w-full mt-4 text-gray-600 hover:text-gray-800 transition">
+                    ← Kembali ke Pilihan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pusat Dashboard -->
+    <div id="pusatDashboard" class="hidden container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Dashboard Pusat</h2>
+            <p class="text-gray-600">Pengurusan kehadiran pelatih</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl p-6 card-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Jumlah Pelatih</p>
+                        <p class="text-2xl font-bold text-gray-800" id="totalPelatih">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-6 card-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Hadir Hari Ini</p>
+                        <p class="text-2xl font-bold text-gray-800" id="hadirHariIni">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-6 card-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Tidak Hadir</p>
+                        <p class="text-2xl font-bold text-gray-800" id="tidakHadir">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-6 card-shadow">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Lewat</p>
+                        <p class="text-2xl font-bold text-gray-800" id="lewat">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            <button onclick="showTambahPelatih()" class="bg-blue-600 text-white p-6 rounded-xl hover:bg-blue-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    <h3 class="font-semibold">Tambah Pelatih</h3>
+                </div>
+            </button>
+            <button onclick="showImportPelatih()" class="bg-green-600 text-white p-6 rounded-xl hover:bg-green-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                    </svg>
+                    <h3 class="font-semibold">Import Pelatih</h3>
+                </div>
+            </button>
+            <button onclick="showPendaftaranSesi()" class="bg-indigo-600 text-white p-6 rounded-xl hover:bg-indigo-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <h3 class="font-semibold">Pendaftaran Sesi</h3>
+                </div>
+            </button>
+            <button onclick="showKehadiran()" class="bg-purple-600 text-white p-6 rounded-xl hover:bg-purple-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    </svg>
+                    <h3 class="font-semibold">Rekod Kehadiran</h3>
+                </div>
+            </button>
+            <button onclick="showLaporanPusat()" class="bg-orange-600 text-white p-6 rounded-xl hover:bg-orange-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <h3 class="font-semibold">Laporan</h3>
+                </div>
+            </button>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl p-6 card-shadow">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Aktiviti Terkini</h3>
+            <div id="recentActivity" class="space-y-3">
+                <div class="flex items-center justify-center p-8 bg-gray-50 rounded-lg">
+                    <div class="text-center">
+                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                        <p class="text-gray-600 font-medium">Tiada Data Pelatih</p>
+                        <p class="text-sm text-gray-500 mt-1">Tambah pelatih baru atau import dari fail untuk mula menggunakan sistem</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="hidden container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Dashboard Admin</h2>
+            <p class="text-gray-600">Pengurusan sistem keseluruhan</p>
+        </div>
+
+        <!-- Admin Menu -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
+            <button onclick="showPusatManagement()" class="bg-blue-600 text-white p-6 rounded-xl hover:bg-blue-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    <h3 class="font-semibold">Urus Pusat</h3>
+                </div>
+            </button>
+            <button onclick="showKursusManagement()" class="bg-green-600 text-white p-6 rounded-xl hover:bg-green-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    <h3 class="font-semibold">Urus Kursus</h3>
+                </div>
+            </button>
+            <button onclick="showSesiManagement()" class="bg-purple-600 text-white p-6 rounded-xl hover:bg-purple-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="font-semibold">Urus Sesi</h3>
+                </div>
+            </button>
+            <button onclick="showLogoManagement()" class="bg-indigo-600 text-white p-6 rounded-xl hover:bg-indigo-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <h3 class="font-semibold">Urus Logo</h3>
+                </div>
+            </button>
+            <button onclick="showPelatihManagement()" class="bg-teal-600 text-white p-6 rounded-xl hover:bg-teal-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <h3 class="font-semibold">Urus Pelatih</h3>
+                </div>
+            </button>
+            <button onclick="showDataManagementMenu()" class="bg-gray-600 text-white p-6 rounded-xl hover:bg-gray-700 transition card-shadow hover-scale">
+                <div class="text-center">
+                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                    </svg>
+                    <h3 class="font-semibold">Urus Data</h3>
+                </div>
+            </button>
+        </div>
+
+        <!-- System Overview -->
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl p-6 card-shadow">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Jumlah Pusat</h3>
+                <p class="text-3xl font-bold text-blue-600">5</p>
+                <p class="text-sm text-gray-600 mt-2">Pusat aktif di Kelantan</p>
+            </div>
+            <div class="bg-white rounded-xl p-6 card-shadow">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Jumlah Kursus</h3>
+                <p class="text-3xl font-bold text-green-600">22</p>
+                <p class="text-sm text-gray-600 mt-2">Kursus yang ditawarkan</p>
+            </div>
+            <div class="bg-white rounded-xl p-6 card-shadow">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Jumlah Pelatih</h3>
+                <p class="text-3xl font-bold text-purple-600" id="totalPelatihAdmin">0</p>
+                <p class="text-sm text-gray-600 mt-2">Pelatih berdaftar</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Modals and Forms (Hidden by default) -->
+    <!-- Modal untuk Rekod Kehadiran -->
+    <div id="kehadiranModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-6xl w-full mx-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Rekod Kehadiran Pelatih</h3>
+                <div class="text-sm text-gray-600">
+                    Tarikh: <span class="font-semibold" id="currentDate"></span>
+                </div>
+            </div>
+            
+            <!-- Filter dan Search -->
+            <div class="mb-6 space-y-4">
+                <div class="flex space-x-4">
+                    <div class="flex-1">
+                        <input type="text" id="searchPelatih" placeholder="Cari nama pelatih..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" onkeyup="filterPelatih()">
+                    </div>
+                    <div>
+                        <select id="filterKursus" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" onchange="filterPelatih()">
+                            <option value="">Semua Kursus</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button onclick="markAllPresent()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                            Semua Hadir
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Date Search Section -->
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <label class="text-sm font-medium text-blue-800">Cari Kehadiran Mengikut Tarikh:</label>
+                        </div>
+                        <div>
+                            <input type="date" id="searchTarikh" class="px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white" onchange="cariKehadiranTarikh()">
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="cariKehadiranTarikh()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
+                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                Cari
+                            </button>
+                            <button onclick="resetTarikhCarian()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition text-sm">
+                                Reset
+                            </button>
+                            <button onclick="showAttendanceHistory()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                                📊 Sejarah Kehadiran
+                            </button>
+                        </div>
+                    </div>
+                    <div id="tarikhInfo" class="mt-2 text-sm text-blue-700 hidden">
+                        <!-- Date search info will be displayed here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Senarai Pelatih -->
+            <div id="kehadiranList" class="space-y-3 mb-6">
+                <!-- Dynamic content will be populated here -->
+            </div>
+            
+            <div class="flex space-x-4">
+                <button onclick="closeKehadiran()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition">
+                    Tutup
+                </button>
+                <button onclick="simpanKehadiran()" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                    Simpan Kehadiran
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal untuk Tambah Pelatih -->
+    <div id="tambahPelatihModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">Tambah Pelatih Baru</h3>
+            <form onsubmit="tambahPelatih(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Nama Penuh</label>
+                    <input type="text" id="namaPelatih" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">No. KP</label>
+                    <input type="text" id="noKP" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Sesi Kursus</label>
+                    <select id="sesiPelatih" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">Pilih Sesi Kursus</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Kursus</label>
+                    <input type="text" id="kursusPelatih" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100" readonly placeholder="Kursus akan diisi automatik berdasarkan sesi">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">No. Telefon</label>
+                    <input type="tel" id="noTelefon" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                        Tambah
+                    </button>
+                    <button type="button" onclick="closeTambahPelatih()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-xs text-gray-500 mt-8 p-4 border-t">
+        <p>Sistem Kehadiran GIATMARA Kelantan v2.0.0 | Kemaskini: 19/12/2024</p>
+        <p>Untuk sokongan teknikal: <a href="mailto:admin@giatmara.gov.my" class="text-blue-600">admin@giatmara.gov.my</a></p>
+        <p class="mt-2">© 2024 GIATMARA Kelantan. Hak cipta terpelihara.</p>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let currentUserType = null;
+        let pelatihData = [];
+        let attendanceHistory = {};
+        let isEditMode = false;
+
+        // Local Storage Keys
+        const STORAGE_KEYS = {
+            PELATIH_DATA: 'giatmara_pelatih_data',
+            ATTENDANCE_HISTORY: 'giatmara_attendance_history',
+            SESI_DATA: 'giatmara_sesi_data',
+            PUSAT_DATA: 'giatmara_pusat_data',
+            KURSUS_DATA: 'giatmara_kursus_data',
+            CURRENT_LOGO: 'giatmara_current_logo',
+            LOGO_HISTORY: 'giatmara_logo_history',
+            SYSTEM_SETTINGS: 'giatmara_system_settings'
+        };
+
+        // Local Storage Functions
+        function saveToLocalStorage(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+                return true;
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+                return false;
+            }
+        }
+
+        function loadFromLocalStorage(key, defaultValue = null) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultValue;
+            } catch (error) {
+                console.error('Error loading from localStorage:', error);
+                return defaultValue;
+            }
+        }
+
+        function clearLocalStorage() {
+            try {
+                Object.values(STORAGE_KEYS).forEach(key => {
+                    localStorage.removeItem(key);
+                });
+                return true;
+            } catch (error) {
+                console.error('Error clearing localStorage:', error);
+                return false;
+            }
+        }
+
+        // Auto-save functions
+        function autoSavePelatihData() {
+            saveToLocalStorage(STORAGE_KEYS.PELATIH_DATA, pelatihData);
+        }
+
+        function autoSaveAttendanceHistory() {
+            saveToLocalStorage(STORAGE_KEYS.ATTENDANCE_HISTORY, attendanceHistory);
+        }
+
+        function autoSaveSesiData() {
+            saveToLocalStorage(STORAGE_KEYS.SESI_DATA, sesiData);
+        }
+
+        function autoSavePusatData() {
+            saveToLocalStorage(STORAGE_KEYS.PUSAT_DATA, pusatData);
+        }
+
+        function autoSaveKursusData() {
+            saveToLocalStorage(STORAGE_KEYS.KURSUS_DATA, kursusData);
+        }
+
+        // Load all data from localStorage on startup
+        function initializeFromLocalStorage() {
+            const savedPelatihData = loadFromLocalStorage(STORAGE_KEYS.PELATIH_DATA, []);
+            if (savedPelatihData.length > 0) {
+                pelatihData = savedPelatihData;
+            }
+
+            const savedAttendanceHistory = loadFromLocalStorage(STORAGE_KEYS.ATTENDANCE_HISTORY, {});
+            if (Object.keys(savedAttendanceHistory).length > 0) {
+                attendanceHistory = savedAttendanceHistory;
+            }
+
+            const savedSesiData = loadFromLocalStorage(STORAGE_KEYS.SESI_DATA);
+            if (savedSesiData && savedSesiData.length > 0) {
+                sesiData = savedSesiData;
+            }
+
+            const savedPusatData = loadFromLocalStorage(STORAGE_KEYS.PUSAT_DATA);
+            if (savedPusatData && savedPusatData.length > 0) {
+                pusatData = savedPusatData;
+            }
+
+            const savedKursusData = loadFromLocalStorage(STORAGE_KEYS.KURSUS_DATA);
+            if (savedKursusData && savedKursusData.length > 0) {
+                kursusData = savedKursusData;
+            }
+
+            console.log('✅ Data berjaya dimuat dari Local Storage');
+        }
+
+        // Global array to store session data
+        let sesiData = [
+            {
+                id: 1,
+                namaSesi: "Sesi Pagi Elektrik 2024",
+                kodKursus: "ELK001",
+                namaKursus: "PENDAWAI ELEKTRIK (PW4)",
+                tahun: "2024",
+                tempoh: "6",
+                tarikhMula: "2024-01-01",
+                tarikhTamat: "2024-06-30",
+                masaMula: "08:00",
+                masaTamat: "12:00",
+                kapasiti: 25,
+                keterangan: "Sesi pagi untuk kursus elektrik tahun 2024",
+                status: "Aktif",
+                pelatihTerdaftar: 0
+            },
+            {
+                id: 2,
+                namaSesi: "Sesi Petang Komputer 2024",
+                kodKursus: "KOM001",
+                namaKursus: "TEKNOLOGI SISTEM KOMPUTER",
+                tahun: "2024",
+                tempoh: "6",
+                tarikhMula: "2024-02-01",
+                tarikhTamat: "2024-07-31",
+                masaMula: "14:00",
+                masaTamat: "18:00",
+                kapasiti: 20,
+                keterangan: "Sesi petang untuk kursus komputer tahun 2024",
+                status: "Aktif",
+                pelatihTerdaftar: 0
+            },
+            {
+                id: 3,
+                namaSesi: "Sesi Pagi Mekanikal 2024",
+                kodKursus: "MEK001",
+                namaKursus: "TEKNOLOGI AUTOMOTIF (TAHAP 2)",
+                tahun: "2024",
+                tempoh: "9",
+                tarikhMula: "2024-03-01",
+                tarikhTamat: "2024-11-30",
+                masaMula: "08:00",
+                masaTamat: "12:00",
+                kapasiti: 30,
+                keterangan: "Sesi pagi untuk kursus mekanikal tahun 2024",
+                status: "Akan Datang",
+                pelatihTerdaftar: 0
+            }
+        ];
+
+        // Global array to store centers
+        let pusatData = [
+            {id: 1, nama: "GIATMARA Kota Bharu", alamat: "Jalan Sultan Yahya Petra, 15200 Kota Bharu, Kelantan", password: "pusat123", status: "Aktif"},
+            {id: 2, nama: "GIATMARA Machang", alamat: "Jalan Raya Machang, 18500 Machang, Kelantan", password: "pusat123", status: "Aktif"},
+            {id: 3, nama: "GIATMARA Tanah Merah", alamat: "Jalan Raya Tanah Merah, 17500 Tanah Merah, Kelantan", password: "pusat123", status: "Aktif"},
+            {id: 4, nama: "GIATMARA Gua Musang", alamat: "Jalan Raya Gua Musang, 18300 Gua Musang, Kelantan", password: "pusat123", status: "Aktif"},
+            {id: 5, nama: "GIATMARA Kuala Krai", alamat: "Jalan Raya Kuala Krai, 18000 Kuala Krai, Kelantan", password: "pusat123", status: "Aktif"}
+        ];
+
+        // Global array to store courses
+        let kursusData = [
+            {id: 1, nama: "BAIKPULIH DAN MENGECAT KENDERAAN", tempoh: "6", status: "Aktif"},
+            {id: 2, nama: "BAIKPULIH KERANGKA KENDERAAN", tempoh: "6", status: "Aktif"},
+            {id: 3, nama: "BEM", tempoh: "3", status: "Aktif"},
+            {id: 4, nama: "JAHITAN LANGSIR & SOFT FURNISHING", tempoh: "6", status: "Aktif"},
+            {id: 5, nama: "JAHITAN PAKAIAN DAN FESYEN", tempoh: "6", status: "Aktif"},
+            {id: 6, nama: "KIMPALAN STRUKTUR KELULI", tempoh: "9", status: "Aktif"},
+            {id: 7, nama: "KONFEKSIONERI & BAKERI", tempoh: "6", status: "Aktif"},
+            {id: 8, nama: "MASAKAN DAN PRAMUSAJI", tempoh: "6", status: "Aktif"},
+            {id: 9, nama: "MASAKAN ETNIK ASIAN", tempoh: "6", status: "Aktif"},
+            {id: 10, nama: "PENDAWAI ELEKTRIK (PW4)", tempoh: "12", status: "Aktif"},
+            {id: 11, nama: "PENDAWAIAN ELEKTRIK PW2", tempoh: "6", status: "Aktif"},
+            {id: 12, nama: "REKAAN PAKAIAN DAN FESYEN", tempoh: "6", status: "Aktif"},
+            {id: 13, nama: "TEK. BINANAN BANBGUNAN", tempoh: "12", status: "Aktif"},
+            {id: 14, nama: "TEK. KIMPALAN", tempoh: "9", status: "Aktif"},
+            {id: 15, nama: "TEK. PENYEJUKBEKUAN & PENYAMANAN UDARA", tempoh: "12", status: "Aktif"},
+            {id: 16, nama: "TEKNOLOGI AUTOMOTIF (TAHAP 2)", tempoh: "6", status: "Aktif"},
+            {id: 17, nama: "TEKNOLOGI AUTOMOTIF (TAHAP 3)", tempoh: "9", status: "Aktif"},
+            {id: 18, nama: "TEKNOLOGI ELEKTRONIK", tempoh: "6", status: "Aktif"},
+            {id: 19, nama: "TEKNOLOGI MOTOSIKAL", tempoh: "6", status: "Aktif"},
+            {id: 20, nama: "TEKNOLOGI PERABOT", tempoh: "9", status: "Aktif"},
+            {id: 21, nama: "TEKNOLOGI SISTEM KOMPUTER", tempoh: "6", status: "Aktif"},
+            {id: 22, nama: "TERAPI KECANTIKAN DAN SOLEKAN", tempoh: "6", status: "Aktif"}
+        ];
+
+        // Show different login forms
+        function showPusatLogin() {
+            document.getElementById('loginSelection').classList.add('hidden');
+            document.getElementById('pusatLoginForm').classList.remove('hidden');
+        }
+
+        function showAdminLogin() {
+            document.getElementById('loginSelection').classList.add('hidden');
+            document.getElementById('adminLoginForm').classList.remove('hidden');
+        }
+
+        function backToSelection() {
+            document.getElementById('pusatLoginForm').classList.add('hidden');
+            document.getElementById('adminLoginForm').classList.add('hidden');
+            document.getElementById('loginSelection').classList.remove('hidden');
+        }
+
+        // Login functions
+        function loginPusat(event) {
+            event.preventDefault();
+            const pusatValue = document.getElementById('pusatSelect').value;
+            const password = document.getElementById('pusatPassword').value;
+            
+            if (!pusatValue || !password) {
+                alert('Sila pilih pusat dan masukkan kata laluan!');
+                return;
+            }
+            
+            const selectedPusat = pusatData.find(p => {
+                const pusatKey = p.nama.toLowerCase().replace(/\s+/g, '-').replace('giatmara-', '');
+                return pusatKey === pusatValue;
+            });
+            
+            if (selectedPusat && selectedPusat.password === password) {
+                currentUser = selectedPusat.nama;
+                currentUserType = 'pusat';
+                document.getElementById('currentUser').textContent = `Pusat: ${selectedPusat.nama}`;
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('pusatLoginForm').classList.add('hidden');
+                document.getElementById('pusatDashboard').classList.remove('hidden');
+                updatePusatStats();
+            } else {
+                alert('Kata laluan tidak betul! Sila cuba sekali lagi atau hubungi pentadbir sistem.');
+            }
+        }
+
+        function loginAdmin(event) {
+            event.preventDefault();
+            const adminId = document.getElementById('adminId').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (adminId === 'admin' && password === 'admin123') {
+                currentUser = 'Administrator';
+                currentUserType = 'admin';
+                document.getElementById('currentUser').textContent = 'Administrator';
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('adminLoginForm').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                updateAdminStats();
+            } else {
+                alert('ID Admin atau kata laluan tidak betul!');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            currentUserType = null;
+            document.getElementById('userInfo').classList.add('hidden');
+            document.getElementById('pusatDashboard').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('loginSelection').classList.remove('hidden');
+            
+            // Reset forms
+            document.getElementById('pusatSelect').value = '';
+            document.getElementById('pusatPassword').value = '';
+            document.getElementById('adminId').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        // Update pusat statistics
+        function updatePusatStats() {
+            const total = pelatihData.length;
+            const hadir = pelatihData.filter(p => p.status === 'Hadir').length;
+            const tidakHadir = pelatihData.filter(p => p.status === 'Tidak Hadir').length;
+            const lewat = pelatihData.filter(p => p.status === 'Lewat').length;
+            
+            document.getElementById('totalPelatih').textContent = total;
+            document.getElementById('hadirHariIni').textContent = hadir;
+            document.getElementById('tidakHadir').textContent = tidakHadir;
+            document.getElementById('lewat').textContent = lewat;
+            
+            updateCourseFilters();
+        }
+
+        // Update admin statistics
+        function updateAdminStats() {
+            const total = pelatihData.length;
+            document.getElementById('totalPelatihAdmin').textContent = total;
+        }
+
+        // Update course filter options
+        function updateCourseFilters() {
+            const uniqueCourses = [...new Set(pelatihData.map(p => p.kursus))].sort();
+            
+            const filterKursus = document.getElementById('filterKursus');
+            if (filterKursus) {
+                const currentValue = filterKursus.value;
+                filterKursus.innerHTML = '<option value="">Semua Kursus</option>';
+                
+                uniqueCourses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course;
+                    option.textContent = course;
+                    if (course === currentValue) option.selected = true;
+                    filterKursus.appendChild(option);
+                });
+            }
+        }
+
+        // Modal functions
+        function showTambahPelatih() {
+            document.getElementById('tambahPelatihModal').classList.remove('hidden');
+            updateSesiDropdown();
+        }
+        
+        function updateSesiDropdown() {
+            const sesiSelect = document.getElementById('sesiPelatih');
+            sesiSelect.innerHTML = '<option value="">Pilih Sesi Kursus</option>';
+            
+            const availableSesi = sesiData.filter(s => 
+                (s.status === 'Aktif' || s.status === 'Akan Datang') && 
+                s.pelatihTerdaftar < s.kapasiti
+            );
+            
+            availableSesi.sort((a, b) => {
+                if (a.status !== b.status) {
+                    return a.status === 'Aktif' ? -1 : 1;
+                }
+                return a.namaSesi.localeCompare(b.namaSesi);
+            });
+            
+            availableSesi.forEach(sesi => {
+                const option = document.createElement('option');
+                option.value = sesi.id;
+                const statusLabel = sesi.status === 'Aktif' ? '🟢' : '🔵';
+                option.textContent = `${statusLabel} ${sesi.namaSesi} (${sesi.pelatihTerdaftar}/${sesi.kapasiti})`;
+                sesiSelect.appendChild(option);
+            });
+            
+            sesiSelect.onchange = function() {
+                const selectedSesiId = this.value;
+                const kursusField = document.getElementById('kursusPelatih');
+                
+                if (selectedSesiId) {
+                    const selectedSesi = sesiData.find(s => s.id == selectedSesiId);
+                    if (selectedSesi) {
+                        kursusField.value = selectedSesi.namaKursus;
+                    }
+                } else {
+                    kursusField.value = '';
+                }
+            };
+        }
+
+        function closeTambahPelatih() {
+            document.getElementById('tambahPelatihModal').classList.add('hidden');
+            document.getElementById('namaPelatih').value = '';
+            document.getElementById('noKP').value = '';
+            document.getElementById('sesiPelatih').value = '';
+            document.getElementById('kursusPelatih').value = '';
+            document.getElementById('noTelefon').value = '';
+        }
+
+        function tambahPelatih(event) {
+            event.preventDefault();
+            const nama = document.getElementById('namaPelatih').value;
+            const noKP = document.getElementById('noKP').value;
+            const sesiId = document.getElementById('sesiPelatih').value;
+            const kursus = document.getElementById('kursusPelatih').value;
+            const telefon = document.getElementById('noTelefon').value;
+            
+            const selectedSesi = sesiData.find(s => s.id == sesiId);
+            if (!selectedSesi) {
+                alert('Sila pilih sesi kursus yang sah!');
+                return;
+            }
+            
+            if (selectedSesi.pelatihTerdaftar >= selectedSesi.kapasiti) {
+                alert(`Sesi "${selectedSesi.namaSesi}" sudah penuh! Kapasiti maksimum: ${selectedSesi.kapasiti} pelatih.`);
+                return;
+            }
+            
+            const existingPelatih = pelatihData.find(p => p.noKP === noKP);
+            if (existingPelatih) {
+                alert(`Pelatih dengan No. KP "${noKP}" sudah wujud dalam sistem!`);
+                return;
+            }
+            
+            const newPelatih = {
+                id: pelatihData.length + 1,
+                nama: nama,
+                noKP: noKP,
+                sesiId: sesiId,
+                sesiNama: selectedSesi.namaSesi,
+                kodKursus: selectedSesi.kodKursus,
+                kursus: kursus,
+                telefon: telefon,
+                status: 'Tidak Hadir'
+            };
+            
+            pelatihData.push(newPelatih);
+            selectedSesi.pelatihTerdaftar++;
+            
+            autoSavePelatihData();
+            autoSaveSesiData();
+            
+            updatePusatStats();
+            updateAdminStats();
+            closeTambahPelatih();
+            alert(`Pelatih "${nama}" berjaya ditambah ke sesi "${selectedSesi.namaSesi}"!`);
+        }
+
+        function showImportPelatih() {
+            alert('Fungsi import pelatih akan dibangunkan dalam versi seterusnya.');
+        }
+
+        function showPendaftaranSesi() {
+            alert('Fungsi pendaftaran sesi akan dibangunkan dalam versi seterusnya.');
+        }
+
+        function showKehadiran() {
+            document.getElementById('kehadiranModal').classList.remove('hidden');
+            const today = new Date();
+            const todayString = today.getFullYear() + '-' + 
+                               String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                               String(today.getDate()).padStart(2, '0');
+            document.getElementById('searchTarikh').value = todayString;
+            updateKehadiranList();
+        }
+
+        function closeKehadiran() {
+            document.getElementById('kehadiranModal').classList.add('hidden');
+        }
+
+        function updateKehadiranList() {
+            const kehadiranList = document.getElementById('kehadiranList');
+            kehadiranList.innerHTML = '';
+            
+            if (pelatihData.length === 0) {
+                kehadiranList.innerHTML = `
+                    <div class="flex items-center justify-center p-8 bg-gray-50 rounded-lg">
+                        <div class="text-center">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            </svg>
+                            <p class="text-gray-600 font-medium">Tiada Pelatih Berdaftar</p>
+                            <p class="text-sm text-gray-500 mt-1">Tambah pelatih baru untuk mula merekod kehadiran</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            pelatihData.forEach(pelatih => {
+                const statusColor = pelatih.status === 'Hadir' ? 'bg-green-100 text-green-800' : 
+                                  pelatih.status === 'Lewat' ? 'bg-yellow-100 text-yellow-800' : 
+                                  'bg-red-100 text-red-800';
+                
+                const pelatihElement = document.createElement('div');
+                pelatihElement.className = 'flex justify-between items-center p-4 bg-gray-50 rounded-lg';
+                pelatihElement.innerHTML = `
+                    <div>
+                        <p class="font-medium">${pelatih.nama}</p>
+                        <p class="text-sm text-gray-600">${pelatih.kursus} | ${pelatih.sesiNama || 'Tiada Sesi'} | ${pelatih.noKP}</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="px-3 py-1 rounded-full text-sm ${statusColor}">${pelatih.status}</span>
+                        <div class="flex space-x-1">
+                            <button onclick="updateStatus(${pelatih.id}, 'Hadir')" class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition">
+                                Hadir
+                            </button>
+                            <button onclick="updateStatus(${pelatih.id}, 'Lewat')" class="px-3 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700 transition">
+                                Lewat
+                            </button>
+                            <button onclick="updateStatus(${pelatih.id}, 'Tidak Hadir')" class="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition">
+                                Tidak Hadir
+                            </button>
+                        </div>
+                    </div>
+                `;
+                kehadiranList.appendChild(pelatihElement);
+            });
+        }
+
+        function updateStatus(pelatihId, newStatus) {
+            const pelatih = pelatihData.find(p => p.id === pelatihId);
+            if (pelatih) {
+                pelatih.status = newStatus;
+                updateKehadiranList();
+                updatePusatStats();
+                updateAdminStats();
+                
+                autoSavePelatihData();
+                
+                const activity = `${pelatih.nama} - ${newStatus} pada ${new Date().toLocaleTimeString('ms-MY', {hour: '2-digit', minute: '2-digit'})}`;
+                addRecentActivity(activity, newStatus);
+                
+                showNotification(`Status ${pelatih.nama} dikemas kini kepada: ${newStatus}`);
+            }
+        }
+
+        function addRecentActivity(activity, status) {
+            const recentActivity = document.getElementById('recentActivity');
+            const statusColor = status === 'Hadir' ? 'bg-green-500' : 
+                              status === 'Lewat' ? 'bg-yellow-500' : 'bg-red-500';
+            
+            const activityElement = document.createElement('div');
+            activityElement.className = 'flex items-center p-3 bg-gray-50 rounded-lg';
+            activityElement.innerHTML = `
+                <div class="w-2 h-2 ${statusColor} rounded-full mr-3"></div>
+                <span class="text-sm text-gray-600">${activity}</span>
+            `;
+            
+            // Clear empty state if exists
+            const emptyState = recentActivity.querySelector('.text-center');
+            if (emptyState) {
+                recentActivity.innerHTML = '';
+            }
+            
+            recentActivity.insertBefore(activityElement, recentActivity.firstChild);
+            if (recentActivity.children.length > 5) {
+                recentActivity.removeChild(recentActivity.lastChild);
+            }
+        }
+
+        function markAllPresent() {
+            if (pelatihData.length === 0) {
+                alert('Tiada pelatih untuk ditandakan hadir.');
+                return;
+            }
+            
+            pelatihData.forEach(pelatih => {
+                pelatih.status = 'Hadir';
+            });
+            updateKehadiranList();
+            updatePusatStats();
+            updateAdminStats();
+            autoSavePelatihData();
+            showNotification('Semua pelatih telah ditandakan hadir!');
+        }
+
+        function simpanKehadiran() {
+            const currentDate = document.getElementById('searchTarikh').value;
+            const formattedDate = new Date(currentDate).toLocaleDateString('ms-MY');
+            
+            const today = new Date().toISOString().split('T')[0];
+            if (currentDate === today) {
+                saveAttendanceForDate(currentDate, pelatihData);
+            }
+            
+            showNotification(`Kehadiran untuk ${formattedDate} telah disimpan!`);
+            closeKehadiran();
+        }
+
+        function saveAttendanceForDate(date, attendanceData) {
+            if (!attendanceHistory[date]) {
+                attendanceHistory[date] = {};
+            }
+            
+            attendanceData.forEach(pelatih => {
+                attendanceHistory[date][pelatih.id] = pelatih.status;
+            });
+            
+            autoSaveAttendanceHistory();
+        }
+
+        function showLaporanPusat() {
+            alert('Fungsi laporan pusat akan dibangunkan dalam versi seterusnya.');
+        }
+
+        function showPusatManagement() {
+            alert('Fungsi pengurusan pusat akan dibangunkan dalam versi seterusnya.');
+        }
+
+        function showKursusManagement() {
+            alert('Fungsi pengurusan kursus akan dibangunkan dalam versi seterusnya.');
+        }
+
+        function showSesiManagement() {
+            alert('Fungsi pengurusan sesi akan dibangunkan dalam versi seterusnya.');
+        }
+
+        function showLogoManagement() {
+            alert('Fungsi pengurusan logo akan dibangunkan dalam versi seterusnya.');
+        }
+
+        function showPelatihManagement() {
+            alert('Fungsi pengurusan pelatih akan dibangunkan dalam versi seterusnya.');
+        }
+
+        function showAttendanceHistory() {
+            alert('Fungsi sejarah kehadiran akan dibangunkan dalam versi seterusnya.');
+        }
+
+        function cariKehadiranTarikh() {
+            const selectedDate = document.getElementById('searchTarikh').value;
+            if (selectedDate) {
+                const formattedDate = new Date(selectedDate).toLocaleDateString('ms-MY');
+                showNotification(`Kehadiran untuk ${formattedDate} telah dipaparkan.`);
+            }
+        }
+
+        function resetTarikhCarian() {
+            const today = new Date();
+            const todayString = today.getFullYear() + '-' + 
+                               String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                               String(today.getDate()).padStart(2, '0');
+            document.getElementById('searchTarikh').value = todayString;
+            showNotification('Tarikh carian telah direset ke hari ini.');
+        }
+
+        function filterPelatih() {
+            // Simple filter implementation
+            updateKehadiranList();
+        }
+
+        function showDataManagementMenu() {
+            const dataMenu = `
+                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="dataManagementModal">
+                    <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">🗄️ Pengurusan Data</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <h4 class="font-semibold text-blue-800 mb-2">📊 Status Data</h4>
+                                <div class="text-sm text-blue-700 space-y-1">
+                                    <p>• Pelatih: ${pelatihData.length} rekod</p>
+                                    <p>• Sesi: ${sesiData.length} rekod</p>
+                                    <p>• Pusat: ${pusatData.length} rekod</p>
+                                    <p>• Kehadiran: ${Object.keys(attendanceHistory).length} tarikh</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <button onclick="exportAllData()" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition">
+                                    📤 Export Semua Data
+                                </button>
+                                <button onclick="importAllData()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                                    📥 Import Data
+                                </button>
+                                <button onclick="resetAllData()" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition">
+                                    🗑️ Reset Semua Data
+                                </button>
+                                <button onclick="closeDataManagement()" class="w-full bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400 transition">
+                                    Tutup
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', dataMenu);
+        }
+
+        function closeDataManagement() {
+            const modal = document.getElementById('dataManagementModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function exportAllData() {
+            const allData = {
+                pelatihData: pelatihData,
+                attendanceHistory: attendanceHistory,
+                sesiData: sesiData,
+                pusatData: pusatData,
+                kursusData: kursusData,
+                exportDate: new Date().toISOString(),
+                version: '2.0.0'
+            };
+
+            const dataStr = JSON.stringify(allData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `GIATMARA_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showNotification('✅ Semua data telah diexport! Simpan fail backup dengan selamat.');
+        }
+
+        function importAllData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        if (confirm('⚠️ AMARAN: Import data akan menggantikan semua data sedia ada. Adakah anda pasti?')) {
+                            if (importedData.pelatihData) pelatihData = importedData.pelatihData;
+                            if (importedData.attendanceHistory) attendanceHistory = importedData.attendanceHistory;
+                            if (importedData.sesiData) sesiData = importedData.sesiData;
+                            if (importedData.pusatData) pusatData = importedData.pusatData;
+                            if (importedData.kursusData) kursusData = importedData.kursusData;
+                            
+                            autoSavePelatihData();
+                            autoSaveAttendanceHistory();
+                            autoSaveSesiData();
+                            autoSavePusatData();
+                            autoSaveKursusData();
+                            
+                            updatePusatStats();
+                            updateAdminStats();
+                            updatePusatDropdown();
+                            updateCourseFilters();
+                            
+                            closeDataManagement();
+                            alert('✅ Data berjaya diimport! Sistem telah dikemas kini.');
+                        }
+                    } catch (error) {
+                        alert('❌ Ralat: Fail backup tidak sah atau rosak.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function resetAllData() {
+            const confirmText = prompt('⚠️ AMARAN: Ini akan memadam SEMUA data secara kekal!\n\nTaip "RESET" untuk mengesahkan:');
+            
+            if (confirmText === 'RESET') {
+                pelatihData = [];
+                attendanceHistory = {};
+                
+                clearLocalStorage();
+                
+                updatePusatStats();
+                updateAdminStats();
+                updateCourseFilters();
+                
+                closeDataManagement();
+                alert('✅ Semua data telah direset! Sistem kembali ke keadaan asal.');
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else if (confirmText !== null) {
+                alert('❌ Teks pengesahan salah. Data tidak direset.');
+            }
+        }
+
+        function updatePusatDropdown() {
+            const pusatSelect = document.getElementById('pusatSelect');
+            pusatSelect.innerHTML = '<option value="">Pilih Pusat GIATMARA</option>';
+            
+            pusatData.forEach(pusat => {
+                const option = document.createElement('option');
+                option.value = pusat.nama.toLowerCase().replace(/\s+/g, '-').replace('giatmara-', '');
+                option.textContent = pusat.nama;
+                pusatSelect.appendChild(option);
+            });
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize the system
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Memulakan Sistem Kehadiran GIATMARA Kelantan...');
+            
+            initializeFromLocalStorage();
+            updatePusatDropdown();
+            updateCourseFilters();
+            
+            const today = new Date();
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('ms-MY');
+            
+            console.log('✅ Sistem Kehadiran GIATMARA Kelantan siap digunakan!');
+            console.log('💾 Local Storage aktif - Data akan kekal selepas refresh');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97081c3ab353b15c',t:'MTc1NTQyMjU4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
